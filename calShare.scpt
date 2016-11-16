@@ -8,22 +8,24 @@ tell application "calendar"
     and title is not "琉球大学情報工学科学年歴" ¬
     and title is not "The University" ¬
     and title is not "Found in Mail" ¬
-    and title is not "Family"
+    and title is not "Family"¬
+    and title is not "Ryuki"
 
   repeat with theCalendar in theCalendars
 
-    set theEventsStartdate to start date of every event of calendar theCalendar ¬
+    set theEventsUid to uid of every event of calendar theCalendar¬
       whose start date is greater than or equal to (current date)
 
-    set theEventsEnddate to end date of every event of calendar theCalendar ¬
-      whose start date is greater than or equal to (current date) 
+    repeat with theEventID in theEventsUid 
 
-    set theEventsAllday to allday event of every event of calendar theCalendar ¬
-      whose start date is greater than or equal to (current date) 
+      set theEventStartDate to (start date of every event ¬
+        of calendar theCalendar whose uid is theEventID)
 
-    set counter to 0 
-    repeat with i in theEventsStartdate 
-      set counter to counter+1
+      set theEventEndDate to (end date of every event¬
+        of calendar theCalendar whose uid is theEventID) 
+
+      set theEventAllday to (allday event of every event¬
+        of calendar theCalendar whose uid is theEventID )
 
       tell calendar "U" 
         make new event at end with properties ¬
@@ -31,12 +33,13 @@ tell application "calendar"
           description:" " , ¬
           summary:"U", ¬
           location:"", ¬
-          start date:(item counter of theEventsStartdate), ¬
-          end date:(item counter of theEventsEnddate), ¬
-          allday event: (item counter of theEventsAllday) ¬
+          start date: theEventStartDate, ¬
+          end date: theEventEndDate,¬
+          allday event: theEventAllday¬ 
         } 
       end tell   
 
     end repeat
+    theCalendars
   end repeat
 end tell
